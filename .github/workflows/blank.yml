@@ -1,8 +1,7 @@
 name: Deploy Lambda Function
 
 on:
-  workflow_dispatch: 
-
+  workflow_dispatch:
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -21,12 +20,9 @@ jobs:
 
       - name: Deploy Lambda function
         run: |
-          zip -r lambda.zip lambda_function.py
-          aws lambda update-function-code --function-name myLamdafunction --zip-file fileb://lambda.zip
-          aws sts get-caller-identity
-          aws lambda add-permission --function-name myLamdafunction --principal s3.amazonaws.com --statement-id S3Invoke1 --action "lambda:InvokeFunction" --source-arn arn:aws:s3:::bucket199551
+          zip -r lambda_function.zip lambda_function.py
+          aws lambda update-function-code --function-name mylambdafunction --zip-file fileb://lambda_function.zip
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-          YOUR_AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_DEFAULT_REGION: ap-south-1
