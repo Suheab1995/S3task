@@ -52,7 +52,7 @@ jobs:
 
       - name: Add S3 trigger to Lambda function
         run: |
-          STATEMENT_ID=$(uuidgen)
+          STATEMENT_ID=$(date '+%Y%m%d%H%M%S')
           aws lambda add-permission \
             --function-name mylambdafunction \
             --statement-id STATEMENT_ID \
