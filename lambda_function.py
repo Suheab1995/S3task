@@ -1,27 +1,29 @@
+import json
+import urllib.parse
 import boto3
-import os
 
-s3_client = boto3.client('s3')
+print('Loading function')
+
+s3 = boto3.client('s3')
 
 def lambda_handler(event, context):
-    try:
-        for record in event['Records']:
-            bucket_name = record['s3']['bucket']['name']
-            object_key = record['s3']['object']['key']
+    source_bucket = event['Records'][0]['s3']['bucket']['name']
+    source_key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
 
-            # Check if the file is a PNG
-            if object_key.lower().endswith('.png'):
-                # Copy the object to bucket2
-                copy_source = {'Bucket': bucket_name, 'Key': object_key}
-                dest_key = os.path.basename(object_key)
-                s3_client.copy_object(CopySource=copy_source, Bucket='mybucket19952', Key=dest_key)
+    # Check if the object has a PNG extension
+    if source_key.lower().endswith('.png'):
+        # Destination bucket and key
+        destination_bucket = "mybucket19962"
+        destination_key = f"png_objects/{source_key.split('/')[-1]}"
 
-        return {
-            'statusCode': 200,
-            'body': 'PNG objects copied successfully'
-        }
-    except Exception as e:
-        return {
-            'statusCode': 500,
-            'body': f'Error: {str(e)}'
-        }
+        # Copy the object
+        s3.copy_object(
+            Bucket=destination_bucket,
+            Key=destination_key,
+            CopySource={'Bucket': source_bucket, 'Key': source_key}
+        )
+        print(f"Object copied from {source_bucket}/{source_key} to {destination_bucket}/{destination_key}")
+        return "PNG object copied successfully"
+    else:
+        print(f"Ignoring non-PNG object: {source_bucket}/{source_key}")
+        return "Non-PNG object ignored"
