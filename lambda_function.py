@@ -20,7 +20,7 @@ def lambda_handler(event, context):
         # Copy the object to bucket2
         copy_source = {'Bucket': bucket_name, 'Key': object_key}
         dest_key = os.path.basename(object_key)
-        s3_client.copy_object(CopySource=copy_source, Bucket='bucket19952', Key=dest_key)
+        s3_client.copy_object(CopySource=copy_source, Bucket='bucket199552', Key=dest_key)
 
         return {'statusCode': 200, 'body': f'Copied {object_key} to bucket2'}
 
