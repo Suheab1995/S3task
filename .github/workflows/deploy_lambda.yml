@@ -37,15 +37,18 @@ jobs:
         run: |
           # Zip Lambda function code
           zip -r lambda_function.zip lambda_function.py
-
-          # Create or update Lambda function
-          aws lambda create-function \
-            --function-name mylambdafunction \
-            --runtime python3.8 \
-            --role arn:aws:iam::730335412815:role/lambda-s3-trigger-role \
-            --handler lambda_function.lambda_handler \
-            --zip-file fileb://lambda_function.zip \
-            --region ap-south-1
+          if aws lambda get-function --function-name mylambdafunction --region ap-south-1 &> /dev/null; then
+          echo "Lambda function already exists, skipping creation."
+          else
+            # Create Lambda function
+           aws lambda create-function \
+           --function-name mylambdafunction \
+           --runtime python3.8 \
+           --role arn:aws:iam::730335412815:role/lambda-s3-trigger-role \
+           --handler lambda_function.lambda_handler \
+           --zip-file fileb://lambda_function.zip \
+           --region ap-south-1
+          fi
 
       - name: Add S3 trigger to Lambda function
         run: |
