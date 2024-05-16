@@ -49,6 +49,13 @@ jobs:
            --zip-file fileb://lambda_function.zip \
            --region ap-south-1
           fi
+      - name: Remove existing S3 trigger permission from Lambda function
+        run: |
+          aws lambda remove-permission \
+          --function-name mylambdafunction \
+          --statement-id STATEMENT_ID \
+          --region ap-south-1 \
+          || true # Ignore errors if the statement doesn't exist    
 
       - name: Add S3 trigger to Lambda function
         run: |
