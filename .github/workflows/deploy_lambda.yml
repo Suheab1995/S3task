@@ -52,9 +52,10 @@ jobs:
 
       - name: Add S3 trigger to Lambda function
         run: |
+          STATEMENT_ID=$(date +%s)
           aws lambda add-permission \
             --function-name mylambdafunction \
-            --statement-id s3-trigger \
+            --statement-id STATEMENT_ID \
             --action "lambda:InvokeFunction" \
             --principal s3.amazonaws.com \
             --source-arn arn:aws:s3:::mybucket19961 \
